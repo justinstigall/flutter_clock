@@ -5,6 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter_clock_helper/model.dart';
+import 'package:dot_clock/digit.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -29,16 +30,16 @@ final _darkTheme = {
 /// A basic digital clock.
 ///
 /// You can do better than this!
-class DigitalClock extends StatefulWidget {
-  const DigitalClock(this.model);
+class DotClock extends StatefulWidget {
+  const DotClock(this.model);
 
   final ClockModel model;
 
   @override
-  _DigitalClockState createState() => _DigitalClockState();
+  _DotClockState createState() => _DotClockState();
 }
 
-class _DigitalClockState extends State<DigitalClock> {
+class _DotClockState extends State<DotClock> {
   DateTime _dateTime = DateTime.now();
   Timer _timer;
 
@@ -51,7 +52,7 @@ class _DigitalClockState extends State<DigitalClock> {
   }
 
   @override
-  void didUpdateWidget(DigitalClock oldWidget) {
+  void didUpdateWidget(DotClock oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.model != oldWidget.model) {
       oldWidget.model.removeListener(_updateModel);
@@ -76,20 +77,12 @@ class _DigitalClockState extends State<DigitalClock> {
   void _updateTime() {
     setState(() {
       _dateTime = DateTime.now();
-      // Update once per minute. If you want to update every second, use the
-      // following code.
+      
+      // Update once per second.
       _timer = Timer(
-        Duration(minutes: 1) -
-            Duration(seconds: _dateTime.second) -
-            Duration(milliseconds: _dateTime.millisecond),
-        _updateTime,
-      );
-      // Update once per second, but make sure to do it at the beginning of each
-      // new second, so that the clock is accurate.
-      // _timer = Timer(
-      //   Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
-      //   _updateTime,
-      // );
+         Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
+         _updateTime,
+       );
     });
   }
 
@@ -101,34 +94,37 @@ class _DigitalClockState extends State<DigitalClock> {
     final hour =
         DateFormat(widget.model.is24HourFormat ? 'HH' : 'hh').format(_dateTime);
     final minute = DateFormat('mm').format(_dateTime);
-    final fontSize = MediaQuery.of(context).size.width / 3.5;
-    final offset = -fontSize / 7;
-    final defaultStyle = TextStyle(
-      color: colors[_Element.text],
-      fontFamily: 'PressStart2P',
-      fontSize: fontSize,
-      shadows: [
-        Shadow(
-          blurRadius: 0,
-          color: colors[_Element.shadow],
-          offset: Offset(10, 0),
-        ),
-      ],
-    );
+
+    int firstDigit;
+    int secondDigit;
+    int thirdDigit;
+    int fourthDigit;
+
+    if (hour.length == 1){
+      firstDigit = 0;
+      secondDigit = int.parse(hour);
+    } else {
+      firstDigit = int.parse(hour.substring(0,1));
+      secondDigit = int.parse(hour.substring(1,2));
+    }
+
+    thirdDigit = int.parse(minute.substring(0,1));
+    fourthDigit = int.parse(minute.substring(1,2));
 
     return Container(
-      color: colors[_Element.background],
-      child: Center(
-        child: DefaultTextStyle(
-          style: defaultStyle,
-          child: Stack(
-            children: <Widget>[
-              Positioned(left: offset, top: 0, child: Text(hour)),
-              Positioned(right: offset, bottom: offset, child: Text(minute)),
-            ],
-          ),
-        ),
-      ),
-    );
+        color: colors[_Element.background],
+        child: AspectRatio(
+            aspectRatio: 5.0 / 3.0,
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Digit(color: Colors.white, digitNumber: firstDigit),
+                  Digit(color: Colors.white, digitNumber: secondDigit),
+                  Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    SizedBox(width: 20.0,)
+                  ],),
+                  Digit(color: Colors.white, digitNumber: thirdDigit),
+                  Digit(color: Colors.white, digitNumber: fourthDigit),
+                ])));
   }
 }
