@@ -11,25 +11,22 @@ import 'package:intl/intl.dart';
 
 enum _Element {
   background,
-  text,
-  shadow,
+  domino,
+  dot,
 }
 
 final _lightTheme = {
   _Element.background: Color(0xFF81B3FE),
-  _Element.text: Colors.white,
-  _Element.shadow: Colors.black,
+  _Element.domino: Colors.white,
+  _Element.dot: Colors.black,
 };
 
 final _darkTheme = {
   _Element.background: Colors.black,
-  _Element.text: Colors.white,
-  _Element.shadow: Color(0xFF174EA6),
+  _Element.domino: Colors.black87,
+  _Element.dot: Colors.red,
 };
 
-/// A basic digital clock.
-///
-/// You can do better than this!
 class DotClock extends StatefulWidget {
   const DotClock(this.model);
 
@@ -118,13 +115,13 @@ class _DotClockState extends State<DotClock> {
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Digit(color: Colors.white, digitNumber: firstDigit),
-                  Digit(color: Colors.white, digitNumber: secondDigit),
+                  Digit(dominoColor: colors[_Element.domino], dotColor: colors[_Element.dot], digitNumber: firstDigit),
+                  Digit(dominoColor: colors[_Element.domino], dotColor: colors[_Element.dot], digitNumber: secondDigit),
                   Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                     SizedBox(width: 20.0,)
                   ],),
-                  Digit(color: Colors.white, digitNumber: thirdDigit),
-                  Digit(color: Colors.white, digitNumber: fourthDigit),
+                  Digit(dominoColor: colors[_Element.domino], dotColor: colors[_Element.dot], digitNumber: thirdDigit),
+                  Digit(dominoColor: colors[_Element.domino], dotColor: colors[_Element.dot], digitNumber: fourthDigit),
                 ])));
   }
 }

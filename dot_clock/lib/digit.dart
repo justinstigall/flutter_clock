@@ -3,14 +3,16 @@ import 'dart:ui';
 
 class Digit extends StatelessWidget {
   const Digit({
-    @required this.color,
+    @required this.dominoColor,
+    @required this.dotColor,
     @required this.digitNumber,
-  })  : assert(color != null),
-        assert(
-            (digitNumber != null) && ((digitNumber >= 0) && digitNumber <= 9));
+  })  : assert(dominoColor != null),
+        assert(dotColor != null),
+        assert((digitNumber != null) && ((digitNumber >= 0) && digitNumber <= 9));
 
-  // Digit Color
-  final Color color;
+  // Domino Colors
+  final Color dominoColor;
+  final Color dotColor;
 
   // Digit to draw (0-9)
   final int digitNumber;
@@ -25,20 +27,23 @@ class Digit extends StatelessWidget {
                 aspectRatio: (5.0 / 3.98) / 3.0,
                 child: CustomPaint(
                     painter:
-                        _DigitPainer(color: color, digitNumber: digitNumber)))
+                        _DigitPainer(dominoColor: dominoColor, dotColor: dotColor, digitNumber: digitNumber)))
           ]));
 }
 
 class _DigitPainer extends CustomPainter {
   const _DigitPainer({
-    @required this.color,
+    @required this.dominoColor,
+    @required this.dotColor,
     @required this.digitNumber,
-  })  : assert(color != null),
+  })  : assert(dominoColor != null),
+        assert(dotColor != null),
         assert(
             (digitNumber != null) && ((digitNumber >= 0) && digitNumber <= 9));
 
-  // Digit Color
-  final Color color;
+  // Domino Colors
+  final Color dominoColor;
+  final Color dotColor;
 
   // Digit to draw (0-9)
   final int digitNumber;
@@ -57,7 +62,7 @@ class _DigitPainer extends CustomPainter {
     double top = 0 + margin;
     double bottom = height;
 
-    double sOffset = 3.0;
+    double sOffset = 4.0;
 
     void drawDots(Paint background,Paint shaddow, Paint foreground) {
       canvas.drawRRect(RRect.fromLTRBR(left + sOffset, top + sOffset, right + sOffset, bottom + sOffset, Radius.circular(20.0)), shaddow);
@@ -70,10 +75,7 @@ class _DigitPainer extends CustomPainter {
 
         case 1:
           {
-            canvas.drawCircle(new Offset(size.width / 2, (bottom / 4.0) * 3), dotsize, foreground);
-            
-            
-            
+            canvas.drawCircle(new Offset(size.width / 2, (bottom / 4.0) * 3), dotsize, foreground);            
           }
           break;
 
@@ -190,19 +192,19 @@ class _DigitPainer extends CustomPainter {
       }
     }
 
-    final paintBackground = Paint()
+    final paintDomino = Paint()
       ..style = PaintingStyle.fill
       ..strokeWidth = 2.0
-      ..color = Colors.white;
+      ..color = dominoColor;
     final paintBackgroundShaddow = Paint()
       ..style = PaintingStyle.fill
       ..strokeWidth = 2.0
       ..color = Colors.grey;
-    final paintForeground = Paint()
+    final paintDotsLines = Paint()
       ..style = PaintingStyle.fill
       ..strokeWidth = 2.0
-      ..color = Colors.black;
-    drawDots(paintBackground, paintBackgroundShaddow, paintForeground);
+      ..color = dotColor;
+    drawDots(paintDomino, paintBackgroundShaddow, paintDotsLines);
   }
 
   @override
